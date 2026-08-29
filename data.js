@@ -211,6 +211,11 @@ const BOOKS = [
     id:"doamnap",
     title:"Doamna Pylinska și secretul lui Chopin",
     cover:"coperti/doamnap.png"
+  },
+  {
+    id:"vero",
+    title:"Scene bucureștene. 1919",
+    cover:"coperti/vero.png"
   }
 
   
