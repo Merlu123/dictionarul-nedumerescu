@@ -212,6 +212,24 @@
     font-size:17px; line-height:1.7; margin:0;
   }
   .story strong{color:var(--coral);}
+  .entry-body{
+    display:grid;
+    grid-template-columns:1fr 190px;
+    gap:24px;
+    align-items:start;
+  }
+  .entry-figure{margin:0;}
+  .entry-figure img{
+    width:100%; display:block;
+    border-radius:10px;
+    box-shadow:0 12px 26px -12px rgba(0,0,0,.4);
+  }
+  .entry-figure figcaption{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px; color:var(--text-muted);
+    text-align:center; line-height:1.4;
+    margin-top:8px;
+  }
   .see-also{
     margin-top:26px; font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--text-muted);
   }
@@ -377,6 +395,8 @@
     .entry-top{font-size:10.5px;}
     .entry-meta{gap:10px;}
     .story{font-size:16px;}
+    .entry-body{grid-template-columns:1fr; gap:16px;}
+    .entry-body .entry-figure{order:-1; max-width:220px; margin:0 auto;}
     .learn-toggle{width:100%; text-align:center; padding:12px 16px;}
     #intro-word{padding:0 16px; text-align:center;}
   }
@@ -481,7 +501,14 @@ function renderEntry(e){
       <span class="tag ${e.tag}">${e.tagLabel}</span>
     </div>
     <p class="why">${e.why}</p>
-    <p class="story">${e.story}</p>
+    ${e.image ? `
+    <div class="entry-body">
+      <p class="story">${e.story}</p>
+      <figure class="entry-figure">
+        <img src="${e.image}" alt="${(e.imageCaption || e.word).replace(/"/g,'&quot;')}" onerror="this.parentElement.style.display='none'">
+        ${e.imageCaption ? `<figcaption>${e.imageCaption}</figcaption>` : ''}
+      </figure>
+    </div>` : `<p class="story">${e.story}</p>`}
     ${others.length ? `<div class="see-also">vezi și: ${others.map(o=>`<a onclick="pick('${o.word.replace(/'/g,"\\'")}')">${o.word}</a>`).join(' · ')}</div>` : ''}
     <button class="learn-toggle ${isLearned(e.word) ? 'learned' : ''}" onclick="toggleLearned('${e.word.replace(/'/g,"\\'")}', this)">
       ${isLearned(e.word) ? '✓ Cuvânt învățat' : '+ Marchează ca învățat'}
