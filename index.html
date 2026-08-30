@@ -209,8 +209,14 @@
     border-bottom:1px dashed #cfc4a0;
   }
   .story{
-    font-size:17px; line-height:1.7; margin:0;
+    font-size:17px; line-height:1.7;
   }
+  .story-para{
+    margin:0 0 14px;
+    text-indent:1.6em; /* alineatul clasic, de carte */
+  }
+  .story-para:first-child{text-indent:0;} /* primul paragraf, dupa titlu, nu se indenteaza — conventie tipografica */
+  .story-para:last-child{margin-bottom:0;}
   .story strong{color:var(--coral);}
   .entry-body{
     display:grid;
@@ -538,6 +544,12 @@ function findEntry(query){
 
 const tagLabels = {myth:'myth', lit:'lit', ist:'ist'};
 
+/* transformă "paragraf1<br><br>paragraf2" în paragrafe reale, indentate ca într-o carte */
+function formatStory(text){
+  const parts = text.split(/<br\s*\/?>\s*<br\s*\/?>/i).map(p => p.trim()).filter(Boolean);
+  return parts.map(p => `<p class="story-para">${p}</p>`).join('');
+}
+
 function renderEntry(e){
   const others = DICT.filter(d=>d.tag===e.tag && d.word!==e.word).slice(0,3);
   return `
@@ -554,7 +566,7 @@ function renderEntry(e){
     <p class="why">${e.why}</p>
     ${e.images && e.images.length ? `
     <div class="entry-body">
-      <p class="story">${e.story}</p>
+      <div class="story">${formatStory(e.story)}</div>
       <div class="entry-figures">
         ${e.images.map(img => `
         <figure class="entry-figure">
@@ -562,7 +574,7 @@ function renderEntry(e){
           ${img.caption ? `<figcaption>${img.caption}</figcaption>` : ''}
         </figure>`).join('')}
       </div>
-    </div>` : `<p class="story">${e.story}</p>`}
+    </div>` : `<div class="story">${formatStory(e.story)}</div>`}
     ${others.length ? `<div class="see-also">vezi și: ${others.map(o=>`<a onclick="pick('${o.word.replace(/'/g,"\\'")}')">${o.word}</a>`).join(' · ')}</div>` : ''}
     <button class="learn-toggle ${isLearned(e.word) ? 'learned' : ''}" onclick="toggleLearned('${e.word.replace(/'/g,"\\'")}', this)">
       ${isLearned(e.word) ? '✓ Cuvânt învățat' : '+ Marchează ca învățat'}
