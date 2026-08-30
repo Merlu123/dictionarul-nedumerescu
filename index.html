@@ -218,6 +218,9 @@
     gap:24px;
     align-items:start;
   }
+  .entry-figures{
+    display:flex; flex-direction:column; gap:16px;
+  }
   .entry-figure{margin:0;}
   .entry-figure img{
     width:100%; display:block;
@@ -396,7 +399,7 @@
     .entry-meta{gap:10px;}
     .story{font-size:16px;}
     .entry-body{grid-template-columns:1fr; gap:16px;}
-    .entry-body .entry-figure{order:-1; max-width:220px; margin:0 auto;}
+    .entry-body .entry-figures{order:-1; max-width:220px; margin:0 auto 4px; gap:12px;}
     .learn-toggle{width:100%; text-align:center; padding:12px 16px;}
     #intro-word{padding:0 16px; text-align:center;}
   }
@@ -501,13 +504,16 @@ function renderEntry(e){
       <span class="tag ${e.tag}">${e.tagLabel}</span>
     </div>
     <p class="why">${e.why}</p>
-    ${e.image ? `
+    ${e.images && e.images.length ? `
     <div class="entry-body">
       <p class="story">${e.story}</p>
-      <figure class="entry-figure">
-        <img src="${e.image}" alt="${(e.imageCaption || e.word).replace(/"/g,'&quot;')}" onerror="this.parentElement.style.display='none'">
-        ${e.imageCaption ? `<figcaption>${e.imageCaption}</figcaption>` : ''}
-      </figure>
+      <div class="entry-figures">
+        ${e.images.map(img => `
+        <figure class="entry-figure">
+          <img src="${img.src}" alt="${(img.caption || e.word).replace(/"/g,'&quot;')}" onerror="this.parentElement.style.display='none'">
+          ${img.caption ? `<figcaption>${img.caption}</figcaption>` : ''}
+        </figure>`).join('')}
+      </div>
     </div>` : `<p class="story">${e.story}</p>`}
     ${others.length ? `<div class="see-also">vezi și: ${others.map(o=>`<a onclick="pick('${o.word.replace(/'/g,"\\'")}')">${o.word}</a>`).join(' · ')}</div>` : ''}
     <button class="learn-toggle ${isLearned(e.word) ? 'learned' : ''}" onclick="toggleLearned('${e.word.replace(/'/g,"\\'")}', this)">
